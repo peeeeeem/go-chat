@@ -1,0 +1,47 @@
+<html>
+  <head>
+    <title>Chat</title>
+    <meta charset="UTF-8" />
+    <style>
+      #textbox {
+        width: 600px;
+        height: 300px;
+        border: 1px solid;
+      }
+
+      #textbox p {
+        margin: 0px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Chat</h1>
+    <div id="textbox"></div>
+    <form id="chatform">
+      <div><label for="msgbox">MSG</label></div>
+      <div>
+        <input name="msgbox" id="msgbox" />
+      </div>
+    </form>
+
+    <script>
+      let ws = new WebSocket("ws://" + location.host + "/ws");
+      ws.onmessage = function (ev) {
+        let p = document.createElement("p");
+        p.append(ev.data);
+        let textbox = document.querySelector("#textbox");
+        textbox.append(p);
+      };
+
+      let chatform = document.querySelector("#chatform");
+      chatform.onsubmit = function (ev) {
+        ev.preventDefault();
+        let msgbox = document.querySelector("#msgbox");
+        ws.send(msgbox.value);
+        msgbox.value = "";
+        return false;
+      };
+    </script>
+  </body>
+</html>
